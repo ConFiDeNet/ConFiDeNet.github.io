@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Confidence Through Parallel Attention for Depth and Uncertainty Estimation in Dynamic Environments">
+  <meta name="keywords" content="Monocular depth estimation, Feature fusion, Robotic Vision, point cloud estimation.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Confidence Through Parallel Attention for Depth and Uncertainty Estimation in Dynamic Environments</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1FWSVCGZTG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-1FWSVCGZTG');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./css/bulma.min.css">
+  <link rel="stylesheet" href="./css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./css/twentytwenty.css">
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="icon" href="./images/favicon.svg">
+
+  <script src="./js/jquery-3.2.1.min.js"></script>
+  <script src="./js/jquery.event.move.js"></script>
+  <script src="./js/jquery.twentytwenty.js"></script>
+  <script src="./js/bulma-carousel.min.js"></script>
+  <script src="./js/bulma-slider.min.js"></script>
+  <script src="./js/fontawesome.all.min.js"></script>
+
+  <!--MathJax-->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Confidence Through Parallel Attention for Depth and Uncertainty Estimation in Dynamic Environments</h1>
+          <!-- <h3 class="title has-text-centered">CVPR 2024 (Oral, Best Paper Award Candidate)</h3> -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                Onkar Susladkar</a>,
+            </span>
+            <span class="author-block">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                Rohit Pawar</a>,
+            </span>
+            <span class="author-block">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                Chirag Sehgal</a>,
+            </span>
+            <span class="author-block">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                Samaksh Ujjawal</a>,
+            </span>
+            <span class="author-block">
+              <a href="" target="_blank" rel="noopener noreferrer">
+                Sparsh Mittal</a>
+            </span>
+          </div>
+
+          <!-- <div class="is-size-5 publication-authors">
+            <span class="author-block">Photogrammetry and Remote Sensing, ETH Zürich</span>
+          </div> -->
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf" style="color: orangered"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>
+                    Code
+                  </span>
+                </a>
+              </span>
+              <!-- Hugging Face Space -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/spaces/prs-eth/marigold" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      &#129303;
+                  </span>
+                  <span>Interactive Demo</span>
+                </a>
+              </span> -->
+              <!-- Hugging Face (diffusers). -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/docs/diffusers/using-diffusers/marigold_usage" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon" style="background-color: white; border-radius: 50%;">
+                      🧨
+                  </span>
+                  <span>&nbsp;Diffusers Tutorial</span>
+                </a>
+              </span> -->
+              <!-- Colab Link. -->
+              <!-- <span class="link-block">
+                <a href="https://colab.research.google.com/drive/12G8reD13DdpMie5ZQlaFNo2WCGeNUH-u?usp=sharing" target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <img src="images/colab.svg">
+                  </span>
+                  <span>&nbsp;Google Colab</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img id="teaser" width="100%" src="./images/abs_3_fig_page-0001.jpg" alt="Abstract diagram showcasing ConFiDeNet's capabilities."/>
+      <!-- <h2 class="subtitle has-text-centered">
+        <span class="methodname">Marigold</span> is the new state-of-the-art depth estimator for images in the wild.
+      </h2> -->
+    </div>
+  </div>
+</section>
+
+
+<section class="section pt-0">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Monocular depth estimation is crucial for robotics, of-fering a lightweight and scalable alternative to stereo or
+            LiDAR-based systems. While recent methods have achieved
+            high accuracy, their efficacy degrades under real-world
+            conditions such as occlusion, and domain shifts. We introduce ConFiDeNet, a unified framework that jointly predicts metric depth and associated aleatoric uncertainty, enabling risk-aware robotic perception. ConFiDeNet employs
+            a lightweight parallel attention module that efficiently fuses
+            semantic cues from DINOv2 dense descriptors and SAM2-
+            based segmentation for densely occluded objects, enhancing structural understanding without sacrificing real-time
+            performance. Further, we explicitly condition the model on
+            environment type, improving generalization across diverse
+            indoor and outdoor scenes without retraining. Our method
+            achieves state-of-the-art results across six datasets under
+            both supervised and zero-shot settings, outperforming nine
+            prior techniques, including Marigold, ZoeDepth, PatchFusion, and MonoProb. With significantly faster inference and
+            high prediction confidence, ConFiDeNet is readily deployable for embodied AI, self-driving applications, and robotic
+            manipulation tasks. We will release the code and models.
+          </p>
+
+          <!-- <p>
+            The gallery below presents several images from the internet and a comparison of <span class="methodname">Marigold</span> with the previous
+            state-of-the-art method LeRes. Use the slider and gestures to reveal details on both sides.
+          </p> -->
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<section class="section pt-0 pb-4">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Qualitative Results</h2>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="hero is-light is-small">
+  <div class="hero-body pt-0">
+    <div class="container">
+      <div id="results-carousel-vertical" class="carousel results-carousel">
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/animal-4855514.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth2_animal-4855514.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/8A10BC4E-4963-4885-8F30-8B28F3F8AB2B-78098-0000351063D6ECE7_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/8A10BC4E-4963-4885-8F30-8B28F3F8AB2B-78098-0000351063D6ECE7_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/robert-visual-diary-berlin-675gaGiiazc-unsplash.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/robert-visual-diary-berlin-675gaGiiazc-unsplashd.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DJI_0221-HDR_crop_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DJI_0221-HDR_crop_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/land-o-lakes-inc-iFx1WMvjvpw-unsplash.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/land-o-lakes-inc-iFx1WMvjvpw-unsplashd2.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DJI_0189_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DJI_0189_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-raulling-29107012.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth_pexels-raulling-29107012.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DSC00058-HDR_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DSC00058-HDR_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/flower-3093072.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth2_flower-3093072.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DSC01162_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DSC01162_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-dystopiasavagestudios-19072522.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth_pexels-dystopiasavagestudios-19072522.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DSC00152-HDR_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/DSC00152-HDR_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-dystopiasavagestudios-19330216.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth2_pexels-dystopiasavagestudios-19330216.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG-20231111-WA0001_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG-20231111-WA0001_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-baris-yigit-239931604-13293030.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth_pexels-baris-yigit-239931604-13293030.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/img_0810_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/img_0810_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-lysenkow-1499344.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth2_pexels-lysenkow-1499344.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG_7860-Edit_crop43_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG_7860-Edit_crop43_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-alispective-32161585.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth_pexels-alispective-32161585.png">
+            </div>
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG_20230223_201232_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG_20230223_201232_ours.jpg
+            </div>
+          </div> -->
+        </div>
+
+        <div class="twoitem">
+          <div class="twentytwenty-container twentytwenty-container-top">
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/pexels-water-3-2147719926-32692223.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/depth2_pexels-water-3-2147719926-32692223.png">
+          </div>
+          <!-- <div class="twentytwenty-container twentytwenty-container-bottom">
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG_20230531_162636_leres.jpg">
+            </div>
+            <div class="cmpcontent">
+              <img src="./images/inthewild/IMG_20230531_162636_ours.jpg">
+            </div>
+          </div> -->
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Method. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Methodology</h2>
+        <div class="content has-text-justified">
+          <!-- <h3 class="title has-text-centered">
+            Fine-tuning protocol
+          </h3> -->
+
+          <p>
+            The method first extracts a semantic mask from the input image using SAM2 and obtains rich visual features using DINOv2. These features, along with VQGAN-encoded image tokens and learnable environment-query vectors, are fused inside a Parallel Fusion Transformer, where separate cross-attention modules blend feature, mask, and query information. The refined representations are then decoded through LoRA-enhanced VQGAN decoders to produce the depth map, uncertainty map, and an auxiliary reconstructed image. Training uses a combination of depth reconstruction loss, uncertainty loss, and image reconstruction loss for stable and reliable depth estimation.
+          </p>
+
+          <img id="method_train" width="100%" src="./images/rebuttal_method-1.png" alt="ConFiDeNet methodology"/>
+
+          <!-- <h3 class="title has-text-centered">
+            Inference scheme
+          </h3>
+
+          <p>
+            Given an input image $x$, we encode it with the original Stable Diffusion VAE into the latent code $z^{(x)}$,
+            and concatenate with the depth latent $z^{(d)}_t$ before giving it to the modified fine-tuned U-Net on every denoising iteration.
+            After executing the schedule of $T$ steps, the resulting depth latent $z^{(d)}_0$ is decoded into
+            an image, whose 3 channels are averaged to get the final estimation $\hat d$.
+          </p>
+
+          <img id="method_inference" width="100%" src="./images/method_inference_compressed.jpg" alt="Marigold inference scheme"/> -->
+
+          <h3 class="title has-text-centered">
+            Quantitative Results
+          </h3>
+
+          <p>
+            Our model surpasses baselines
+            on all key metrics on all datasets. It outperforms Marigold
+            on variance reduction and ECoDepth on robustness under
+            occlusions. The Virtual KITTI 2 results highlight that ConFiDeNet has strong synthetic-to-real generalization, outperforming methods like PatchFusion and Marigold without
+            requiring domain adaptation. Despite the monocular-tostereo modality shift in the Middlebury Stereo dataset, ConFiDeNet maintains accurate high-resolution depth estimation. Across both indoor and outdoor datasets, our model
+            achieves the highest average δ1.25 of 99.01%, indicating
+            highly reliable depth predictions. Additionally, we obtain
+            the lowest AUSE, confirming that our uncertainty maps are
+            well-calibrated and effectively identify erroneous regions.
+          </p>
+
+          <img id="comparison" width="100%" src="images/chirag-webpage-20251202T181608Z-3-001/chirag-webpage/Quantitative Results.png" alt="Comparison with other methods"/>
+
+          <p class="mt-5">
+            Refer to the pdf paper linked above for more details on qualitative, quantitative, and ablation studies.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Method. -->
+  </div>
+
+<script>
+  $(window).on('load', function() {
+    bulmaCarousel.attach('#results-carousel-horizontal', {
+      slidesToScroll: 1,
+      slidesToShow: 3,
+      loop: true,
+      autoplay: true,
+    });
+
+    bulmaCarousel.attach('#results-carousel-vertical', {
+      slidesToScroll: 1,
+      slidesToShow: 5,
+      loop: true,
+      autoplay: true,
+    });
+
+    bulmaCarousel.attach('#results-carousel-testimonials', {
+      slidesToScroll: 1,
+      slidesToShow: 3,
+      loop: true,
+      autoplay: true,
+      breakpoints: [
+        {
+          changePoint: 50 + 260 * 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        },
+        {
+          changePoint: 50 + 260 * 3,
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        },
+        {
+          changePoint: 50 + 260 * 4,
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          loop: true,
+          autoplay: true,
+        }
+      ],
+    });
+
+    $(".twentytwenty-container-top").twentytwenty({
+      before_label: 'Input',
+      after_label: 'Ours',
+      default_offset_pct: 0.75,
+    });
+
+    $(".twentytwenty-container-bottom").twentytwenty({
+      before_label: 'LeRes',
+      after_label: 'Ours',
+      default_offset_pct: 0.5,
+    });
+
+    $('.results-carousel').css({
+      'max-height': '2000px',
+      'visibility': 'visible'
+    });
+  });
+</script>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Citation</h2>
+<pre class="selectable">
+
+</pre>
+
+  </div>
+</section>
+
+<footer class="footer pt-4 pb-0">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website template based on
+            <a href="https://github.com/nerfies/nerfies.github.io">
+              Nerfies
+            </a>
+            and licensed under
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+              CC-BY-SA-4.0
+            </a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
